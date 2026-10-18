@@ -671,6 +671,8 @@ function ManageView({ categories, habits, categoryById, onAddCategory, onDeleteC
   const [catColor, setCatColor] = useState(PALETTE[0]);
   const [habitName, setHabitName] = useState('');
   const [habitCat, setHabitCat] = useState(categories[0]?.id || '');
+  // The selected category may have just been deleted above; fall back to the first one
+  const habitCatId = categoryById[habitCat] ? habitCat : categories[0]?.id || '';
 
   return (
     <div className="manage">
@@ -753,12 +755,12 @@ function ManageView({ categories, habits, categoryById, onAddCategory, onDeleteC
             onChange={(e) => setHabitName(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
-                onAddHabit(habitName, habitCat || categories[0]?.id);
+                onAddHabit(habitName, habitCatId);
                 setHabitName('');
               }
             }}
           />
-          <select className="add-select" value={habitCat} onChange={(e) => setHabitCat(e.target.value)}>
+          <select className="add-select" value={habitCatId} onChange={(e) => setHabitCat(e.target.value)}>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -768,7 +770,7 @@ function ManageView({ categories, habits, categoryById, onAddCategory, onDeleteC
           <button
             className="primary-btn small"
             onClick={() => {
-              onAddHabit(habitName, habitCat || categories[0]?.id);
+              onAddHabit(habitName, habitCatId);
               setHabitName('');
             }}
           >
